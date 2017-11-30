@@ -12,7 +12,10 @@ defmodule ParseCode do
   def parse_stream(file) do
     file
     |> load_file_stream
-    |> Stream.map(&(&1 |> String.trim |> String.replace(~r/\s*\n+\s*|\s/i, " ") |> String.codepoints))
+    |> Stream.map(&(&1 |> String.trim
+    |> String.replace(~r/\s*\n+\s*/, " ")
+    |> String.replace(~r/\s/," ") 
+    |> String.codepoints))
     |> Enum.reduce([], &(&2 ++ &1))
   end
 

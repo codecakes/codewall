@@ -9,7 +9,7 @@ defmodule Codewall do
   """
 
   import ParseCode, only: [parse_stream: 1]
-  import ParseImg, only: [map_pixels: 4, generate_svg: 4]
+  import ParseImg, only: [map_pixels: 4, generate_svg: 4, extract_png: 1]
 
   def build_poster(src_file, img, width, height, ratio) do
     with {:ok, %Imagineer.Image.PNG{pixels: pixels}} <- Imagineer.load(img) do
@@ -25,10 +25,12 @@ defmodule Codewall do
     end
   end
 
-  def generate_poster(src_file, img_file, out_file, width, height, ratio) do
+  def generate_poster(src_file, img_file, out_file, ratio \\ 0.6) do
+    %Pngstruct{width: width, height: height} = extract_png(img_file)
     res = build_poster(src_file, img_file, width, height, ratio)
-    File.open(out_file, [:write], fn(f)->
-      IO.binwrite(f, res)
-    end)
+    # File.open(out_file, [:write], fn(f)->
+    #   IO.binwrite(f, res)
+    # end)
+    File.write!(out_file, res, [:binary])
   end
 end
